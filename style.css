@@ -1365,8 +1365,23 @@ body {
   position: relative;
 }
 
-/* Responsive adjustments */
+/* Responsive adjustments & Mobile Performance Optimizations */
 @media (max-width: 768px) {
+  /* Disable hardware-intensive 3D scrolling animation and blur filters on mobile */
+  .synthwave-grid {
+    animation: none !important;
+  }
+  
+  .glow-sphere {
+    display: none !important;
+  }
+  
+  .neon-box, .neon-box-cyan, .category-card, .modal-content, .save-files-card, .achievements-card {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background: rgba(9, 4, 22, 0.97) !important;
+  }
+
   .container {
     padding: 1.5rem 1rem;
     gap: 1.5rem;

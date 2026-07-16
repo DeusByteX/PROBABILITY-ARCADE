@@ -320,8 +320,14 @@ class ConfettiEngine {
     this.animationFrameId = null;
     this.colors = ['#ff007f', '#00f0ff', '#bc00dd', '#39ff14', '#ff9900', '#3b82f6'];
     
+    // Detect mobile for dynamic performance scaling
+    this.isMobile = window.innerWidth < 768 || navigator.maxTouchPoints > 0;
+    
     this.resizeCanvas();
-    window.addEventListener('resize', () => this.resizeCanvas());
+    window.addEventListener('resize', () => {
+      this.resizeCanvas();
+      this.isMobile = window.innerWidth < 768 || navigator.maxTouchPoints > 0;
+    });
   }
 
   resizeCanvas() {
@@ -336,7 +342,7 @@ class ConfettiEngine {
     return {
       x: x,
       y: y,
-      size: Math.random() * 8 + 4,
+      size: Math.random() * (this.isMobile ? 5 : 8) + 4,
       color: this.colors[Math.floor(Math.random() * this.colors.length)],
       speedX: Math.cos(angle) * speed,
       speedY: Math.sin(angle) * speed,
@@ -351,7 +357,9 @@ class ConfettiEngine {
   }
 
   burst(x, y, count = 20) {
-    for (let i = 0; i < count; i++) {
+    // Halve particle count on mobile devices to save GPU/CPU cycles
+    const finalCount = this.isMobile ? Math.round(count / 2) : count;
+    for (let i = 0; i < finalCount; i++) {
       this.particles.push(this.createParticle(x, y, false));
     }
     this.startLoop();
@@ -362,10 +370,13 @@ class ConfettiEngine {
     const end = Date.now() + duration;
 
     const frame = () => {
-      this.particles.push(this.createParticle(0, this.canvas.height, true));
-      this.particles.push(this.createParticle(this.canvas.width, this.canvas.height, true));
+      // Spawn fewer particles on mobile devices
+      if (!this.isMobile || Math.random() < 0.6) {
+        this.particles.push(this.createParticle(0, this.canvas.height, true));
+        this.particles.push(this.createParticle(this.canvas.width, this.canvas.height, true));
+      }
       
-      if (Math.random() < 0.2) {
+      if (Math.random() < 0.15) {
         this.particles.push(this.createParticle(Math.random() * this.canvas.width, 0, true));
       }
 
@@ -400,20 +411,34 @@ class ConfettiEngine {
         continue;
       }
 
-      this.ctx.save();
-      this.ctx.globalAlpha = p.alpha;
-      this.ctx.translate(p.x, p.y);
-      this.ctx.rotate((p.rotation * Math.PI) / 180);
-      this.ctx.fillStyle = p.color;
-
-      if (p.shape === 'rect') {
-        this.ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+      if (this.isMobile) {
+        // Fast rendering path: skip expensive canvas save, restore, translate, and rotate calls
+        this.ctx.globalAlpha = p.alpha;
+        this.ctx.fillStyle = p.color;
+        if (p.shape === 'rect') {
+          this.ctx.fillRect(p.x - p.size / 2, p.y - p.size / 2, p.size, p.size);
+        } else {
+          this.ctx.beginPath();
+          this.ctx.arc(p.x, p.y, p.size / 2, 0, Math.PI * 2);
+          this.ctx.fill();
+        }
       } else {
-        this.ctx.beginPath();
-        this.ctx.arc(0, 0, p.size / 2, 0, Math.PI * 2);
-        this.ctx.fill();
+        // Standard rendering path for desktops (full rotations and matrix translations)
+        this.ctx.save();
+        this.ctx.globalAlpha = p.alpha;
+        this.ctx.translate(p.x, p.y);
+        this.ctx.rotate((p.rotation * Math.PI) / 180);
+        this.ctx.fillStyle = p.color;
+
+        if (p.shape === 'rect') {
+          this.ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+        } else {
+          this.ctx.beginPath();
+          this.ctx.arc(0, 0, p.size / 2, 0, Math.PI * 2);
+          this.ctx.fill();
+        }
+        this.ctx.restore();
       }
-      this.ctx.restore();
     }
 
     if (this.particles.length > 0) {
