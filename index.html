@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MA21001 Mid-Sem Study Arcade</title>
+  
+  <!-- SEO & Icons -->
+  <meta name="description" content="An interactive, synthwave retro-electric syllabus quest tracker for KIIT MA21001 (Probability & Statistics) Mid-Sem Exam.">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=VT323&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome for Arcade Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Style Link -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Canvas for Confetti -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <!-- Synthwave Grid Background Elements -->
+  <div class="synthwave-grid-container">
+    <div class="synthwave-horizon"></div>
+    <div class="synthwave-grid"></div>
+  </div>
+
+  <!-- Ambient Glow Backgrounds -->
+  <div class="glow-sphere glow-sphere-1"></div>
+  <div class="glow-sphere glow-sphere-2"></div>
+  
+  <!-- Screen 1: Login / Character Selection -->
+  <div id="login-container" class="container login-mode">
+    <header class="hero-card neon-box">
+      <div class="hero-badge">
+        <span class="course-code">KIIT MA21001</span>
+        <span class="course-co">CO1 + CO2</span>
+      </div>
+      <h1 class="title neon-text-purple">PROBABILITY ARCADE</h1>
+      <p class="subtitle">Enter Name to Begin Syllabus Quest</p>
+      
+      <!-- New Player Form -->
+      <form id="login-form" class="login-form">
+        <div class="input-glow-group">
+          <input type="text" id="username-input" class="arcade-input" placeholder="ENTER PLAYER NAME" maxlength="15" required autocomplete="off">
+          <span class="input-bar"></span>
+        </div>
+        <button type="submit" class="btn btn-primary btn-neon-pink width-100">
+          <i class="fa-solid fa-gamepad"></i> INSERT COIN & START
+        </button>
+      </form>
+    </header>
+
+    <!-- Save Files Slots -->
+    <section class="save-files-card neon-box-cyan">
+      <h3 class="section-title text-neon-cyan"><i class="fa-solid fa-floppy-disk"></i> SELECT SAVE FILE</h3>
+      <div class="save-slots-grid" id="save-slots-container">
+        <!-- Rendered save files -->
+      </div>
+    </section>
+  </div>
+
+  <!-- Screen 2: Main Quest Dashboard (Initially hidden) -->
+  <div id="app-container" class="container" style="display: none;">
+    <!-- Header/Hero Section -->
+    <header class="hero-card neon-box">
+      <!-- Top Bar: Player Profile, Sound FX, Reset -->
+      <div class="hero-top-bar">
+        <div class="player-info-badge">
+          <i class="fa-solid fa-user text-neon-cyan"></i>
+          <span>PLAYER: <b id="active-player-name" class="text-neon-cyan">GUEST</b></span>
+        </div>
+        
+        <div class="streak-badge" id="streak-badge-container">
+          <i class="fa-solid fa-fire text-neon-pink"></i>
+          <span>STREAK: <b id="streak-count">0</b> DAYS</span>
+        </div>
+        
+        <div class="top-controls">
+          <button id="sound-btn" class="btn btn-icon btn-neon-cyan" title="Toggle Sound FX">
+            <i class="fa-solid fa-volume-high" id="sound-icon"></i>
+          </button>
+          <button id="logout-btn" class="btn btn-neon-purple" title="Switch Player Profile">
+            <i class="fa-solid fa-arrows-rotate"></i> Switch Player
+          </button>
+          <button id="reset-btn" class="btn btn-danger btn-neon-pink" title="Clear player progress">
+            <i class="fa-solid fa-rotate-left"></i> Reset Quest
+          </button>
+        </div>
+      </div>
+
+      <div class="hero-badge">
+        <span class="course-code">KIIT MA21001</span>
+        <span class="course-co">CO1 + CO2</span>
+      </div>
+      <h1 class="title neon-text-purple">PROBABILITY ARCADE</h1>
+      <p class="subtitle">Mid-Sem Syllabus Quest</p>
+      
+      <!-- XP & Rank Progress Bar -->
+      <div class="xp-dashboard">
+        <div class="xp-header">
+          <span class="rank-title" id="rank-display">Rank: Formula Freshman 🥚</span>
+          <span class="xp-numerical" id="xp-display">0 / 2100 XP</span>
+        </div>
+        <div class="xp-bar-track">
+          <div class="xp-bar-fill" id="xp-fill"></div>
+        </div>
+      </div>
+
+      <!-- Circular SVG Progress and Status Message -->
+      <div class="progress-section">
+        <div class="circular-progress-container">
+          <svg class="progress-ring" width="160" height="160">
+            <defs>
+              <linearGradient id="progress-grad-dashboard" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#ff007f" />
+                <stop offset="100%" stop-color="#00f0ff" />
+              </linearGradient>
+            </defs>
+            <circle class="progress-ring__background" stroke="rgba(255, 255, 255, 0.05)" stroke-width="12" fill="transparent" r="70" cx="80" cy="80"/>
+            <circle class="progress-ring__circle" stroke="url(#progress-grad-dashboard)" stroke-width="12" stroke-linecap="round" fill="transparent" r="70" cx="80" cy="80"/>
+          </svg>
+          <div class="progress-percentage-label">
+            <span id="overall-percentage" class="arcade-font">0%</span>
+            <span id="overall-fraction">0/21</span>
+          </div>
+        </div>
+
+        <div class="motivational-banner">
+          <div class="quest-status text-neon-cyan">QUEST STATUS</div>
+          <div id="motivational-msg" class="motivational-msg">Let's get started 🚀</div>
+          <div class="quest-desc">Clear topics to gain XP and rank up. Can you reach Level 5?</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Achievements Section -->
+    <section class="achievements-card neon-box-cyan">
+      <h3 class="section-title text-neon-cyan"><i class="fa-solid fa-trophy"></i> UNLOCKED ACHIEVEMENTS</h3>
+      <div class="achievements-grid" id="achievements-container">
+        <!-- Dynamically rendered badges -->
+      </div>
+    </section>
+
+    <!-- Syllabus Sections (Generated Dynamically) -->
+    <main id="syllabus-container" class="syllabus-grid">
+      <div class="loading-state">
+        <i class="fa-solid fa-gamepad fa-bounce text-neon-cyan" style="font-size: 2.5rem; margin-bottom: 1rem;"></i>
+        <div>LOADING LEVEL...</div>
+      </div>
+    </main>
+
+    <!-- Leaderboard Section -->
+    <section class="leaderboard-card neon-box">
+      <h3 class="section-title neon-text-purple"><i class="fa-solid fa-ranking-star"></i> LOCAL HIGH SCORES</h3>
+      <div class="leaderboard-table-container">
+        <table class="leaderboard-table">
+          <thead>
+            <tr>
+              <th style="width: 80px;">RANK</th>
+              <th>PLAYER</th>
+              <th style="width: 140px;">XP GAINED</th>
+              <th style="width: 140px;">COMPLETION</th>
+              <th>CURRENT RANK</th>
+            </tr>
+          </thead>
+          <tbody id="leaderboard-body">
+            <!-- Dynamic scores -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p>Made for MA21001 Mid-Sem • Good luck! <i class="fa-solid fa-bolt text-neon-pink heart-pulse"></i></p>
+    </footer>
+  </div>
+
+  <!-- Celebration Modal -->
+  <div id="celebration-modal" class="modal-backdrop">
+    <div class="modal-content neon-box-pink">
+      <div class="modal-glowing-effect"></div>
+      <div class="modal-icon text-neon-pink">👑</div>
+      <h2 class="arcade-font text-shadow-pink">STAGE CLEAR!</h2>
+      <p class="arcade-font-desc">SYLLABUS COMPLETELY CRUSHED</p>
+      <p class="modal-subtext">You have achieved maximum Level and unlocked the "Probability Demi-God" rank. The Mid-Sem exam stands no chance.</p>
+      
+      <div class="modal-stats">
+        <div>
+          <span class="stat-number text-neon-pink">21/21</span>
+          <span class="stat-label">Topics Cleared</span>
+        </div>
+        <div>
+          <span class="stat-number text-neon-cyan">2100 XP</span>
+          <span class="stat-label">Max XP Gained</span>
+        </div>
+      </div>
+      <button id="close-modal-btn" class="btn btn-primary btn-neon-pink">CONTINUE QUEST</button>
+    </div>
+  </div>
+
+  <!-- JavaScript Link -->
+  <script src="script.js"></script>
+</body>
+</html>
