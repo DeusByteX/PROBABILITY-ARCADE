@@ -178,13 +178,75 @@ body {
   margin: 8vh auto 0 auto;
 }
 
-.login-form {
+.auth-tabs {
+  display: flex;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1.5px solid rgba(255, 255, 255, 0.04);
+  border-radius: 14px;
+  padding: 0.3rem;
+  width: 100%;
+  max-width: 340px;
+  margin-top: 0.8rem;
+  margin-bottom: 0.4rem;
+}
+
+.auth-tab {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 800;
+  padding: 0.55rem;
+  cursor: pointer;
+  border-radius: 10px;
+  transition: var(--transition-smooth);
+}
+
+.auth-tab.active {
+  color: var(--text-primary);
+}
+
+#tab-signin.active {
+  background: rgba(0, 240, 255, 0.08);
+  border: 1px solid rgba(0, 240, 255, 0.25);
+  box-shadow: var(--shadow-glow-cyan);
+  color: var(--neon-cyan);
+}
+
+#tab-signup.active {
+  background: rgba(255, 0, 127, 0.08);
+  border: 1px solid rgba(255, 0, 127, 0.25);
+  box-shadow: var(--shadow-glow-pink);
+  color: var(--neon-pink);
+}
+
+.auth-form {
   width: 100%;
   max-width: 380px;
-  margin-top: 1.2rem;
+  margin-top: 0.8rem;
   display: flex;
   flex-direction: column;
-  gap: 1.2rem;
+  gap: 1.1rem;
+}
+
+.auth-error-banner {
+  width: 100%;
+  max-width: 380px;
+  background: rgba(255, 0, 127, 0.08);
+  border: 1.5px solid rgba(255, 0, 127, 0.3);
+  border-radius: 12px;
+  padding: 0.7rem 1.1rem;
+  color: #ff3399;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 750;
+  text-shadow: 0 0 5px rgba(255, 0, 127, 0.3);
+  box-shadow: var(--shadow-glow-pink);
+  text-align: center;
+  margin-bottom: 0.4rem;
+  animation: tick-pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .input-glow-group {

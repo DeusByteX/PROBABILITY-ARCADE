@@ -42,16 +42,40 @@
         <span class="course-co">CO1 + CO2</span>
       </div>
       <h1 class="title neon-text-purple">PROBABILITY ARCADE</h1>
-      <p class="subtitle">Enter Name to Begin Syllabus Quest</p>
+      <p class="subtitle">Character Selection & Authentication</p>
       
-      <!-- New Player Form -->
-      <form id="login-form" class="login-form">
+      <!-- Tab Selection -->
+      <div class="auth-tabs">
+        <button type="button" id="tab-signin" class="auth-tab active">SIGN IN</button>
+        <button type="button" id="tab-signup" class="auth-tab">SIGN UP</button>
+      </div>
+
+      <!-- Notification Warning Banner -->
+      <div id="auth-error-banner" class="auth-error-banner" style="display: none;"></div>
+
+      <!-- Sign In Form -->
+      <form id="signin-form" class="auth-form">
         <div class="input-glow-group">
-          <input type="text" id="username-input" class="arcade-input" placeholder="ENTER PLAYER NAME" maxlength="15" required autocomplete="off">
-          <span class="input-bar"></span>
+          <input type="text" id="signin-username" class="arcade-input" placeholder="ENTER USERNAME" maxlength="15" required autocomplete="off">
+        </div>
+        <div class="input-glow-group">
+          <input type="password" id="signin-password" class="arcade-input" placeholder="ENTER PASSWORD" required autocomplete="off">
+        </div>
+        <button type="submit" class="btn btn-primary btn-neon-cyan width-100">
+          <i class="fa-solid fa-unlock-keyhole"></i> LOAD SAVE FILE
+        </button>
+      </form>
+
+      <!-- Sign Up Form (hidden by default) -->
+      <form id="signup-form" class="auth-form" style="display: none;">
+        <div class="input-glow-group">
+          <input type="text" id="signup-username" class="arcade-input" placeholder="CREATE USERNAME" maxlength="15" required autocomplete="off">
+        </div>
+        <div class="input-glow-group">
+          <input type="password" id="signup-password" class="arcade-input" placeholder="CREATE PASSWORD" required autocomplete="off">
         </div>
         <button type="submit" class="btn btn-primary btn-neon-pink width-100">
-          <i class="fa-solid fa-gamepad"></i> INSERT COIN & START
+          <i class="fa-solid fa-user-plus"></i> CREATE SAVE FILE
         </button>
       </form>
     </header>

@@ -152,6 +152,7 @@ const syllabusData = {
 const PROFILES_KEY = 'ma21001_arcade_profiles';
 const ACTIVE_PLAYER_KEY = 'ma21001_current_player';
 const MUTE_KEY = 'ma21001_sound_muted';
+const LOCAL_SAVES_KEY = 'ma21001_local_saves';
 
 // Supabase Configuration
 const supabaseUrl = 'https://rtohmqovfnnbuxypzrfh.supabase.co';
@@ -923,24 +924,6 @@ function loadPlayerProfile(name) {
   soundFX.playLevelUp();
 }
 
-function registerNewPlayer(name) {
-  const cleanName = name.trim().toUpperCase();
-  if (!cleanName) return;
-  
-  if (!profiles[cleanName]) {
-    profiles[cleanName] = {
-      progress: {},
-      streak: 0,
-      lastDate: null,
-      unlockedAchievements: [],
-      prevLevel: 1
-    };
-    localStorage.setItem(PROFILES_KEY, JSON.stringify(profiles));
-  }
-  
-  loadPlayerProfile(cleanName);
-}
-
 function logoutPlayer() {
   saveCurrentProfile();
   
@@ -960,30 +943,65 @@ function logoutPlayer() {
 async function deletePlayerProfile(name, event) {
   // Prevent click from propagating to logging in
   event.stopPropagation();
+  clearAuthError();
   
-  const confirmDelete = confirm(`Are you sure you want to delete profile "${name}"? All progress will be lost forever (including cloud storage).`);
-  if (confirmDelete) {
-    delete profiles[name];
-    localStorage.setItem(PROFILES_KEY, JSON.stringify(profiles));
-    
-    if (dbClient) {
-      try {
-        await dbClient
-          .from('profiles')
-          .delete()
-          .eq('username', name);
-      } catch (err) {
-        console.error('Supabase Delete Error:', err);
+  const pwd = prompt(`ENTER PASSWORD TO DELETE PROFILE "${name}":`);
+  if (pwd === null) return; // user canceled
+  
+  let matched = false;
+  
+  if (dbClient) {
+    try {
+      const { data, error } = await dbClient
+        .from('profiles')
+        .select('password')
+        .eq('username', name);
+        
+      if (!error && data && data.length > 0) {
+        matched = data[0].password === pwd;
       }
+    } catch (err) {
+      console.error('Delete verification failed:', err);
     }
-    
-    // Play power down sound
-    soundFX.playReset();
-    
-    // Refresh slots listing
-    renderSaveSlots();
-    renderLeaderboard();
+  } else {
+    // Offline mode check
+    if (profiles[name]) {
+      matched = profiles[name].password === pwd;
+    }
   }
+  
+  if (!matched) {
+    alert("INCORRECT PASSWORD. PROFILE DELETION ABORTED.");
+    soundFX.playReset();
+    return;
+  }
+  
+  // Proceed with deletion
+  delete profiles[name];
+  localStorage.setItem(PROFILES_KEY, JSON.stringify(profiles));
+  
+  // Remove from local device memory list
+  let localUsers = JSON.parse(localStorage.getItem(LOCAL_SAVES_KEY)) || [];
+  localUsers = localUsers.filter(u => u !== name);
+  localStorage.setItem(LOCAL_SAVES_KEY, JSON.stringify(localUsers));
+  
+  if (dbClient) {
+    try {
+      await dbClient
+        .from('profiles')
+        .delete()
+        .eq('username', name);
+    } catch (err) {
+      console.error('Supabase Delete Error:', err);
+    }
+  }
+  
+  // Play power down sound
+  soundFX.playReset();
+  
+  // Refresh slots listing
+  renderSaveSlots();
+  renderLeaderboard();
 }
 
 // Render Save Slots Drawer in Login Screen
@@ -991,14 +1009,14 @@ function renderSaveSlots() {
   const container = document.getElementById('save-slots-container');
   container.innerHTML = '';
   
-  const keys = Object.keys(profiles);
-  if (keys.length === 0) {
-    container.innerHTML = `<div class="empty-slots-msg">NO SAVED PROFILES FOUND. CREATE ONE ABOVE TO START GAME!</div>`;
+  const localUsers = JSON.parse(localStorage.getItem(LOCAL_SAVES_KEY)) || [];
+  if (localUsers.length === 0) {
+    container.innerHTML = `<div class="empty-slots-msg">NO SAVED PROFILES FOUND ON THIS DEVICE. SIGN UP ABOVE!</div>`;
     return;
   }
   
-  keys.forEach((name) => {
-    const p = profiles[name];
+  localUsers.forEach((name) => {
+    const p = profiles[name] || { progress: {}, streak: 0 };
     const progressObj = p.progress || {};
     
     // Calculate totals
@@ -1023,10 +1041,22 @@ function renderSaveSlots() {
       </button>
     `;
     
-    // Event listeners
+    // Event listener: clicking a slot autofills the signin form & focuses password
     slotEl.addEventListener('click', () => {
       soundFX.init();
-      loadPlayerProfile(name);
+      clearAuthError();
+      
+      // Toggle tab to signin
+      const tabSignin = document.getElementById('tab-signin');
+      if (tabSignin) tabSignin.click();
+      
+      // Autofill & focus
+      document.getElementById('signin-username').value = name;
+      document.getElementById('signin-password').value = '';
+      document.getElementById('signin-password').focus();
+      
+      slotEl.style.transform = 'scale(0.97)';
+      setTimeout(() => slotEl.style.transform = '', 100);
     });
     
     const delBtn = slotEl.querySelector('.delete-slot-btn');
@@ -1145,6 +1175,22 @@ function updateSoundButtonUI() {
   }
 }
 
+// Auth error notification banner helpers
+function showAuthError(msg) {
+  const banner = document.getElementById('auth-error-banner');
+  if (banner) {
+    banner.textContent = msg;
+    banner.style.display = 'block';
+  }
+}
+
+function clearAuthError() {
+  const banner = document.getElementById('auth-error-banner');
+  if (banner) {
+    banner.style.display = 'none';
+  }
+}
+
 // Initialization on load
 document.addEventListener('DOMContentLoaded', () => {
   soundFX = new SoundFX();
@@ -1171,20 +1217,196 @@ document.addEventListener('DOMContentLoaded', () => {
       renderSaveSlots();
     }
   });
-  
-  // Handle Login form submit
-  const loginForm = document.getElementById('login-form');
-  if (loginForm) {
-    loginForm.addEventListener('submit', (e) => {
+
+  // Toggle tab buttons (Sign In vs Sign Up)
+  const tabSignin = document.getElementById('tab-signin');
+  const tabSignup = document.getElementById('tab-signup');
+  const signinForm = document.getElementById('signin-form');
+  const signupForm = document.getElementById('signup-form');
+
+  if (tabSignin && tabSignup && signinForm && signupForm) {
+    tabSignin.addEventListener('click', () => {
+      tabSignin.classList.add('active');
+      tabSignup.classList.remove('active');
+      signinForm.style.display = 'flex';
+      signupForm.style.display = 'none';
+      clearAuthError();
+    });
+
+    tabSignup.addEventListener('click', () => {
+      tabSignup.classList.add('active');
+      tabSignin.classList.remove('active');
+      signupForm.style.display = 'flex';
+      signinForm.style.display = 'none';
+      clearAuthError();
+    });
+  }
+
+  // Handle Sign In form submit
+  if (signinForm) {
+    signinForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       soundFX.init();
+      clearAuthError();
+
+      const usernameInput = document.getElementById('signin-username');
+      const passwordInput = document.getElementById('signin-password');
       
-      const input = document.getElementById('username-input');
-      const name = input.value.trim().toUpperCase();
-      if (name) {
-        registerNewPlayer(name);
-        input.value = '';
+      const username = usernameInput.value.trim().toUpperCase();
+      const password = passwordInput.value;
+
+      if (!username || !password) return;
+      let record = null;
+
+      // 1. Fetch from Supabase
+      if (dbClient) {
+        try {
+          const { data, error } = await dbClient
+            .from('profiles')
+            .select('*')
+            .eq('username', username);
+
+          if (error) {
+            showAuthError("DATABASE ERROR. TRY AGAIN.");
+            return;
+          }
+
+          if (!data || data.length === 0) {
+            showAuthError("PLAYER NOT FOUND! SIGN UP FIRST.");
+            return;
+          }
+
+          record = data[0];
+        } catch (err) {
+          showAuthError("CONNECTION FAILURE.");
+          return;
+        }
+      } else {
+        // Offline / Local fallback check
+        if (profiles[username]) {
+          record = {
+            username: username,
+            password: profiles[username].password,
+            progress: profiles[username].progress,
+            streak: profiles[username].streak,
+            last_date: profiles[username].lastDate,
+            unlocked_achievements: profiles[username].unlockedAchievements,
+            prev_level: profiles[username].prevLevel
+          };
+        } else {
+          showAuthError("PLAYER NOT FOUND OFFLINE.");
+          return;
+        }
       }
+
+      // 2. Validate password
+      if (record.password !== password) {
+        showAuthError("INCORRECT PASSWORD!");
+        soundFX.playReset();
+        return;
+      }
+
+      // 3. Update local caches
+      profiles[username] = {
+        progress: record.progress || {},
+        streak: record.streak || 0,
+        lastDate: record.last_date || null,
+        unlockedAchievements: record.unlocked_achievements || [],
+        prevLevel: record.prev_level || 1,
+        password: record.password
+      };
+      localStorage.setItem(PROFILES_KEY, JSON.stringify(profiles));
+
+      let localUsers = JSON.parse(localStorage.getItem(LOCAL_SAVES_KEY)) || [];
+      if (!localUsers.includes(username)) {
+        localUsers.push(username);
+        localStorage.setItem(LOCAL_SAVES_KEY, JSON.stringify(localUsers));
+      }
+
+      // 4. Load dashboard
+      usernameInput.value = '';
+      passwordInput.value = '';
+      loadPlayerProfile(username);
+    });
+  }
+
+  // Handle Sign Up form submit
+  if (signupForm) {
+    signupForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      soundFX.init();
+      clearAuthError();
+
+      const usernameInput = document.getElementById('signup-username');
+      const passwordInput = document.getElementById('signup-password');
+      
+      const username = usernameInput.value.trim().toUpperCase();
+      const password = passwordInput.value;
+
+      if (!username || !password) return;
+
+      // 1. Check for duplicates in Supabase
+      if (dbClient) {
+        try {
+          const { data, error } = await dbClient
+            .from('profiles')
+            .select('username')
+            .eq('username', username);
+
+          if (error) {
+            showAuthError("DATABASE ERROR. TRY AGAIN.");
+            return;
+          }
+
+          if (data && data.length > 0) {
+            showAuthError("USERNAME ALREADY TAKEN!");
+            return;
+          }
+
+          // 2. Create profile remotely
+          const { error: insertError } = await dbClient
+            .from('profiles')
+            .insert({
+              username: username,
+              password: password,
+              progress: {},
+              streak: 0,
+              last_date: null,
+              unlocked_achievements: [],
+              prev_level: 1
+            });
+
+          if (insertError) {
+            showAuthError("FAILED TO CREATE PROFILE.");
+            return;
+          }
+        } catch (err) {
+          showAuthError("CONNECTION FAILURE.");
+          return;
+        }
+      }
+
+      // 3. Update local caches
+      profiles[username] = {
+        progress: {},
+        streak: 0,
+        lastDate: null,
+        unlockedAchievements: [],
+        prevLevel: 1,
+        password: password
+      };
+      localStorage.setItem(PROFILES_KEY, JSON.stringify(profiles));
+
+      let localUsers = JSON.parse(localStorage.getItem(LOCAL_SAVES_KEY)) || [];
+      if (!localUsers.includes(username)) {
+        localUsers.push(username);
+        localStorage.setItem(LOCAL_SAVES_KEY, JSON.stringify(localUsers));
+      }
+
+      // 4. Load dashboard
+      usernameInput.value = '';
+      passwordInput.value = '';
+      loadPlayerProfile(username);
     });
   }
   
