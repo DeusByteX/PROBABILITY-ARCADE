@@ -865,20 +865,60 @@ async function syncProfilesFromSupabase() {
     }
     
     if (data) {
+      // Rebuild profiles object from scratch to remove deleted users
+      profiles = {};
       data.forEach((p) => {
         profiles[p.username] = {
           progress: p.progress || {},
           streak: p.streak || 0,
           lastDate: p.last_date || null,
           unlockedAchievements: p.unlocked_achievements || [],
-          prevLevel: p.prev_level || 1
+          prevLevel: p.prev_level || 1,
+          password: p.password
         };
       });
       localStorage.setItem(PROFILES_KEY, JSON.stringify(profiles));
+      
+      // Clean up local save slots on this device if any user was deleted from the database
+      let localUsers = JSON.parse(localStorage.getItem(LOCAL_SAVES_KEY)) || [];
+      localUsers = localUsers.filter(u => profiles[u]);
+      localStorage.setItem(LOCAL_SAVES_KEY, JSON.stringify(localUsers));
     }
   } catch (err) {
     console.error('Supabase Sync Error:', err);
   }
+}
+
+// Subscribe to real-time changes on profiles table (Supabase Realtime)
+function subscribeToLeaderboardChanges() {
+  if (!dbClient) return;
+  
+  dbClient
+    .channel('public:profiles')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'profiles' }, async (payload) => {
+      // Re-fetch all profiles from database to keep cache completely in sync
+      await syncProfilesFromSupabase();
+      
+      // If the active player's data was modified from another browser/client, sync it silently
+      if (activePlayer && payload.new && payload.new.username === activePlayer) {
+        const p = payload.new;
+        userProgress = p.progress || {};
+        userStreak = p.streak || 0;
+        userLastDate = p.last_date || null;
+        userUnlockedAchievements = p.unlocked_achievements || [];
+        userPrevLevel = p.prev_level || 1;
+        renderSyllabus();
+      }
+      
+      // Refresh UI renders
+      if (activePlayer) {
+        updateProgress();
+        renderLeaderboard();
+      } else {
+        renderSaveSlots();
+      }
+    })
+    .subscribe();
 }
 
 async function loadPlayerProfile(name) {
@@ -1221,6 +1261,9 @@ function clearAuthError() {
 document.addEventListener('DOMContentLoaded', () => {
   soundFX = new SoundFX();
   confetti = new ConfettiEngine('confetti-canvas');
+  
+  // Activate real-time Supabase database listener
+  subscribeToLeaderboardChanges();
   
   // Load profiles from localStorage
   const savedProfiles = localStorage.getItem(PROFILES_KEY);
