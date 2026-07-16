@@ -156,10 +156,10 @@ const MUTE_KEY = 'ma21001_sound_muted';
 // Supabase Configuration
 const supabaseUrl = 'https://rtohmqovfnnbuxypzrfh.supabase.co';
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0b2htcW92Zm5uYnV4eXB6cmZoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQxNzcyODMsImV4cCI6MjA5OTc1MzI4M30.nL5G_TTnPHmG1139batbrcRbh2ScrzDtt3m5ZaXj290';
-let supabase = null;
+let dbClient = null;
 
 if (window.supabase) {
-  supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+  dbClient = window.supabase.createClient(supabaseUrl, supabaseKey);
 }
 
 // Achievements Definitions
@@ -830,9 +830,9 @@ async function saveCurrentProfile() {
   localStorage.setItem(PROFILES_KEY, JSON.stringify(profiles));
 
   // Sync remotely
-  if (supabase) {
+  if (dbClient) {
     try {
-      const { error } = await supabase
+      const { error } = await dbClient
         .from('profiles')
         .upsert({
           username: activePlayer,
@@ -852,9 +852,9 @@ async function saveCurrentProfile() {
 
 // Sync all profiles from Supabase to local cache
 async function syncProfilesFromSupabase() {
-  if (!supabase) return;
+  if (!dbClient) return;
   try {
-    const { data, error } = await supabase
+    const { data, error } = await dbClient
       .from('profiles')
       .select('*');
     
@@ -966,9 +966,9 @@ async function deletePlayerProfile(name, event) {
     delete profiles[name];
     localStorage.setItem(PROFILES_KEY, JSON.stringify(profiles));
     
-    if (supabase) {
+    if (dbClient) {
       try {
-        await supabase
+        await dbClient
           .from('profiles')
           .delete()
           .eq('username', name);
