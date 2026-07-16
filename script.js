@@ -153,6 +153,15 @@ const PROFILES_KEY = 'ma21001_arcade_profiles';
 const ACTIVE_PLAYER_KEY = 'ma21001_current_player';
 const MUTE_KEY = 'ma21001_sound_muted';
 
+// Supabase Configuration
+const supabaseUrl = 'https://rtohmqovfnnbuxypzrfh.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0b2htcW92Zm5uYnV4eXB6cmZoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQxNzcyODMsImV4cCI6MjA5OTc1MzI4M30.nL5G_TTnPHmG1139batbrcRbh2ScrzDtt3m5ZaXj290';
+let supabase = null;
+
+if (window.supabase) {
+  supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+}
+
 // Achievements Definitions
 const achievementsList = [
   { id: 'first_topic', name: 'First Blood 🥉', desc: 'Clear your first syllabus topic', check: (c, pr) => c >= 1 },
@@ -805,17 +814,70 @@ function updateProgress() {
 }
 
 // Profile Save / Loading Logic
-function saveCurrentProfile() {
+async function saveCurrentProfile() {
   if (!activePlayer) return;
   
-  profiles[activePlayer] = {
+  const profileData = {
     progress: userProgress,
     streak: userStreak,
     lastDate: userLastDate,
     unlockedAchievements: userUnlockedAchievements,
     prevLevel: userPrevLevel
   };
+  
+  // Save locally
+  profiles[activePlayer] = profileData;
   localStorage.setItem(PROFILES_KEY, JSON.stringify(profiles));
+
+  // Sync remotely
+  if (supabase) {
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .upsert({
+          username: activePlayer,
+          progress: userProgress,
+          streak: userStreak,
+          last_date: userLastDate,
+          unlocked_achievements: userUnlockedAchievements,
+          prev_level: userPrevLevel,
+          updated_at: new Date().toISOString()
+        });
+      if (error) console.error('Supabase Sync Error:', error);
+    } catch (e) {
+      console.error('Supabase Sync Error:', e);
+    }
+  }
+}
+
+// Sync all profiles from Supabase to local cache
+async function syncProfilesFromSupabase() {
+  if (!supabase) return;
+  try {
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('*');
+    
+    if (error) {
+      console.error('Error syncing from Supabase:', error);
+      return;
+    }
+    
+    if (data) {
+      data.forEach((p) => {
+        profiles[p.username] = {
+          progress: p.progress || {},
+          streak: p.streak || 0,
+          lastDate: p.last_date || null,
+          unlockedAchievements: p.unlocked_achievements || [],
+          prevLevel: p.prev_level || 1
+        };
+      });
+      localStorage.setItem(PROFILES_KEY, JSON.stringify(profiles));
+    }
+  } catch (err) {
+    console.error('Supabase Sync Error:', err);
+  }
 }
 
 function loadPlayerProfile(name) {
@@ -895,20 +957,32 @@ function logoutPlayer() {
   soundFX.playReset();
 }
 
-function deletePlayerProfile(name, event) {
+async function deletePlayerProfile(name, event) {
   // Prevent click from propagating to logging in
   event.stopPropagation();
   
-  const confirmDelete = confirm(`Are you sure you want to delete profile "${name}"? All progress will be lost forever.`);
+  const confirmDelete = confirm(`Are you sure you want to delete profile "${name}"? All progress will be lost forever (including cloud storage).`);
   if (confirmDelete) {
     delete profiles[name];
     localStorage.setItem(PROFILES_KEY, JSON.stringify(profiles));
+    
+    if (supabase) {
+      try {
+        await supabase
+          .from('profiles')
+          .delete()
+          .eq('username', name);
+      } catch (err) {
+        console.error('Supabase Delete Error:', err);
+      }
+    }
     
     // Play power down sound
     soundFX.playReset();
     
     // Refresh slots listing
     renderSaveSlots();
+    renderLeaderboard();
   }
 }
 
@@ -1087,6 +1161,16 @@ document.addEventListener('DOMContentLoaded', () => {
   } else {
     profiles = {};
   }
+
+  // Sync profiles from Supabase in the background to update leaderboard and slots
+  syncProfilesFromSupabase().then(() => {
+    if (activePlayer) {
+      updateProgress();
+      renderLeaderboard();
+    } else {
+      renderSaveSlots();
+    }
+  });
   
   // Handle Login form submit
   const loginForm = document.getElementById('login-form');
