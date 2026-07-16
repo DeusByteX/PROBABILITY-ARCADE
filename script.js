@@ -881,11 +881,37 @@ async function syncProfilesFromSupabase() {
   }
 }
 
-function loadPlayerProfile(name) {
+async function loadPlayerProfile(name) {
   activePlayer = name;
   localStorage.setItem(ACTIVE_PLAYER_KEY, name);
   
-  const p = profiles[name];
+  // Fetch fresh profile state from database
+  if (dbClient) {
+    try {
+      const { data, error } = await dbClient
+        .from('profiles')
+        .select('*')
+        .eq('username', name);
+        
+      if (!error && data && data.length > 0) {
+        const p = data[0];
+        // Overwrite local cache with fresh remote values
+        profiles[name] = {
+          progress: p.progress || {},
+          streak: p.streak || 0,
+          lastDate: p.last_date || null,
+          unlockedAchievements: p.unlocked_achievements || [],
+          prevLevel: p.prev_level || 1,
+          password: p.password
+        };
+        localStorage.setItem(PROFILES_KEY, JSON.stringify(profiles));
+      }
+    } catch (err) {
+      console.error('Failed to sync fresh profile from Supabase:', err);
+    }
+  }
+  
+  const p = profiles[name] || { progress: {}, streak: 0 };
   userProgress = p.progress || {};
   userStreak = p.streak || 0;
   userLastDate = p.lastDate || null;
@@ -1495,10 +1521,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const originalMute = soundFX.muted;
     soundFX.muted = true;
     
-    loadPlayerProfile(lastActivePlayer);
-    
-    soundFX.muted = originalMute;
-    updateSoundButtonUI();
+    loadPlayerProfile(lastActivePlayer).then(() => {
+      soundFX.muted = originalMute;
+      updateSoundButtonUI();
+    });
   } else {
     // Show login screen
     document.getElementById('login-container').style.display = 'block';
