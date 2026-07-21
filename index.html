@@ -119,11 +119,11 @@
       </div>
 
       <div class="hero-badge">
-        <span class="course-code">KIIT MA21001</span>
-        <span class="course-co">CO1 + CO2</span>
+        <span class="course-code" id="hero-course-code">KIIT MA21001</span>
+        <span class="course-co" id="hero-course-co">CO1 + CO2</span>
       </div>
-      <h1 class="title neon-text-purple">PROBABILITY ARCADE</h1>
-      <p class="subtitle">Mid-Sem Syllabus Quest</p>
+      <h1 class="title neon-text-purple" id="hero-course-title">PROBABILITY ARCADE</h1>
+      <p class="subtitle" id="hero-course-subtitle">Mid-Sem Syllabus Quest</p>
       
       <!-- XP & Rank Progress Bar -->
       <div class="xp-dashboard">
@@ -170,6 +170,20 @@
         <!-- Dynamically rendered badges -->
       </div>
     </section>
+
+    <!-- Course Switcher Navigation Tabs -->
+    <div class="course-tabs-bar">
+      <button id="course-tab-probability" class="course-tab active">
+        <span class="tab-icon">🎲</span>
+        <span class="tab-title">PROBABILITY & STATS</span>
+        <span class="tab-badge" id="prob-tab-badge">0/21</span>
+      </button>
+      <button id="course-tab-dsa" class="course-tab">
+        <span class="tab-icon">💻</span>
+        <span class="tab-title">DSA ROADMAP</span>
+        <span class="tab-badge" id="dsa-tab-badge">0/53</span>
+      </button>
+    </div>
 
     <!-- Syllabus Sections (Generated Dynamically) -->
     <main id="syllabus-container" class="syllabus-grid">

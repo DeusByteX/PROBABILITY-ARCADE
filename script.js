@@ -1,152 +1,567 @@
-// Syllabus Data
-const syllabusData = {
-  "categories": [
-    {
-      "name": "Foundations of Probability",
-      "emoji": "🎲",
-      "topics": [
-        {
-          "title": "Sample Space & Events",
-          "lecture": "GS Lec 8-9",
-          "primary": ["https://www.youtube.com/watch?v=DM_a4kgYqnM", "https://www.youtube.com/watch?v=LF5Jh4IMjcU"],
-          "alternate": []
-        },
-        {
-          "title": "Axiom of Probability & Properties",
-          "lecture": "GS Lec 8 (+11 for properties)",
-          "primary": ["https://www.youtube.com/watch?v=DM_a4kgYqnM", "https://www.youtube.com/watch?v=5PAXmAHK8ls"],
-          "alternate": ["https://www.khanacademy.org/math/ka-math-class-11/x0419e5b3b578592a:probability-ncert-new/x0419e5b3b578592a:axiomatic-approach-to-probability/v/axiomatic-approach-to-probability"]
-        },
-        {
-          "title": "Conditional Probability",
-          "lecture": "GS Lec 10",
-          "primary": ["https://www.youtube.com/watch?v=bAmIAdhCUzg"],
-          "alternate": []
-        },
-        {
-          "title": "Bayes' Theorem",
-          "lecture": "GS Lec 14",
-          "primary": ["https://www.youtube.com/watch?v=WOYylyjkq_g"],
-          "alternate": []
-        },
-        {
-          "title": "Independent Events",
-          "lecture": "GS Lec 12",
-          "primary": ["https://www.youtube.com/watch?v=1MxZ1Z59tzc"],
-          "alternate": []
-        },
-        {
-          "title": "Random Variable",
-          "lecture": "GS Lec 15",
-          "primary": ["https://www.youtube.com/watch?v=2n1hapVMHL0"],
-          "alternate": []
-        }
-      ]
-    },
-    {
-      "name": "Discrete Distributions",
-      "emoji": "🎯",
-      "topics": [
-        {
-          "title": "PMF (Probability Mass Function)",
-          "lecture": "Dedicated",
-          "primary": [],
-          "alternate": ["https://www.youtube.com/results?search_query=PMF+JB+Statistics"]
-        },
-        {
-          "title": "CDF (Cumulative Distribution Function)",
-          "lecture": "Dedicated",
-          "primary": [],
-          "alternate": ["https://www.youtube.com/results?search_query=CDF+JB+Statistics"]
-        },
-        {
-          "title": "Expectation, Variance & SD",
-          "lecture": "GS Lec 16",
-          "primary": ["https://www.youtube.com/watch?v=1jfHFNSPJO0"],
-          "alternate": []
-        },
-        {
-          "title": "Discrete Uniform Distribution",
-          "lecture": "GS Lec 17",
-          "primary": ["https://www.youtube.com/watch?v=cNqb_awlB1A"],
-          "alternate": []
-        },
-        {
-          "title": "Geometric Distribution",
-          "lecture": "Dedicated",
-          "primary": [],
-          "alternate": ["https://www.youtube.com/results?search_query=Geometric+Distribution+JB+Statistics"]
-        },
-        {
-          "title": "Moment Generating Function",
-          "lecture": "Dedicated",
-          "primary": [],
-          "alternate": ["https://www.youtube.com/results?search_query=Moment+Generating+Function+JB+Statistics"]
-        },
-        {
-          "title": "Binomial Distribution",
-          "lecture": "GS Lec 18",
-          "primary": ["https://www.youtube.com/watch?v=IFhvaO_b5ds"],
-          "alternate": []
-        },
-        {
-          "title": "Hypergeometric Distribution",
-          "lecture": "Dedicated",
-          "primary": [],
-          "alternate": ["https://www.youtube.com/results?search_query=Hypergeometric+Distribution+JB+Statistics"]
-        },
-        {
-          "title": "Negative Binomial Distribution",
-          "lecture": "Dedicated",
-          "primary": [],
-          "alternate": ["https://www.youtube.com/results?search_query=Negative+Binomial+Distribution+JB+Statistics"]
-        },
-        {
-          "title": "Poisson Distribution",
-          "lecture": "GS Lec 20",
-          "primary": ["https://www.youtube.com/watch?v=zv7_EwPyzCo"],
-          "alternate": []
-        }
-      ]
-    },
-    {
-      "name": "Continuous Distributions",
-      "emoji": "📈",
-      "topics": [
-        {
-          "title": "Continuous Random Variable",
-          "lecture": "GS Lec 23",
-          "primary": ["https://www.youtube.com/watch?v=oTaTb1EZQ8w"],
-          "alternate": []
-        },
-        {
-          "title": "Continuous Uniform Distribution",
-          "lecture": "GS Lec 25-26",
-          "primary": ["https://www.youtube.com/watch?v=gxQOaeoQ3Sk", "https://www.youtube.com/watch?v=n_1Z-HVemP0"],
-          "alternate": []
-        },
-        {
-          "title": "Normal Distribution",
-          "lecture": "GS Lec 24",
-          "primary": ["https://www.youtube.com/watch?v=4rHwrkc-w9Y"],
-          "alternate": []
-        },
-        {
-          "title": "Normal Approximation",
-          "lecture": "GS Lec 24",
-          "primary": ["https://www.youtube.com/watch?v=4rHwrkc-w9Y"],
-          "alternate": []
-        },
-        {
-          "title": "Exponential Distribution",
-          "lecture": "GS Lec 27",
-          "primary": ["https://www.youtube.com/watch?v=y7q9U35R9v8"],
-          "alternate": []
-        }
-      ]
-    }
-  ]
+// Multi-Course Syllabus Data
+let currentCourse = 'probability';
+
+const coursesData = {
+  probability: {
+    title: "PROBABILITY ARCADE",
+    code: "KIIT MA21001",
+    subtitle: "Mid-Sem Syllabus Quest",
+    co: "CO1 + CO2",
+    totalTopics: 21,
+    categories: [
+      {
+        name: "Foundations of Probability",
+        emoji: "🎲",
+        topics: [
+          {
+            title: "Sample Space & Events",
+            lecture: "GS Lec 8-9",
+            primary: ["https://www.youtube.com/watch?v=DM_a4kgYqnM", "https://www.youtube.com/watch?v=LF5Jh4IMjcU"],
+            alternate: []
+          },
+          {
+            title: "Axiom of Probability & Properties",
+            lecture: "GS Lec 8 (+11 for properties)",
+            primary: ["https://www.youtube.com/watch?v=DM_a4kgYqnM", "https://www.youtube.com/watch?v=5PAXmAHK8ls"],
+            alternate: ["https://www.khanacademy.org/math/ka-math-class-11/x0419e5b3b578592a:probability-ncert-new/x0419e5b3b578592a:axiomatic-approach-to-probability/v/axiomatic-approach-to-probability"]
+          },
+          {
+            title: "Conditional Probability",
+            lecture: "GS Lec 10",
+            primary: ["https://www.youtube.com/watch?v=bAmIAdhCUzg"],
+            alternate: []
+          },
+          {
+            title: "Bayes' Theorem",
+            lecture: "GS Lec 14",
+            primary: ["https://www.youtube.com/watch?v=WOYylyjkq_g"],
+            alternate: []
+          },
+          {
+            title: "Independent Events",
+            lecture: "GS Lec 12",
+            primary: ["https://www.youtube.com/watch?v=1MxZ1Z59tzc"],
+            alternate: []
+          },
+          {
+            title: "Random Variable",
+            lecture: "GS Lec 15",
+            primary: ["https://www.youtube.com/watch?v=2n1hapVMHL0"],
+            alternate: []
+          }
+        ]
+      },
+      {
+        name: "Discrete Distributions",
+        emoji: "🎯",
+        topics: [
+          {
+            title: "PMF (Probability Mass Function)",
+            lecture: "Dedicated",
+            primary: [],
+            alternate: ["https://www.youtube.com/results?search_query=PMF+JB+Statistics"]
+          },
+          {
+            title: "CDF (Cumulative Distribution Function)",
+            lecture: "Dedicated",
+            primary: [],
+            alternate: ["https://www.youtube.com/results?search_query=CDF+JB+Statistics"]
+          },
+          {
+            title: "Expectation, Variance & SD",
+            lecture: "GS Lec 16",
+            primary: ["https://www.youtube.com/watch?v=1jfHFNSPJO0"],
+            alternate: []
+          },
+          {
+            title: "Discrete Uniform Distribution",
+            lecture: "GS Lec 17",
+            primary: ["https://www.youtube.com/watch?v=cNqb_awlB1A"],
+            alternate: []
+          },
+          {
+            title: "Geometric Distribution",
+            lecture: "Dedicated",
+            primary: [],
+            alternate: ["https://www.youtube.com/results?search_query=Geometric+Distribution+JB+Statistics"]
+          },
+          {
+            title: "Moment Generating Function",
+            lecture: "Dedicated",
+            primary: [],
+            alternate: ["https://www.youtube.com/results?search_query=Moment+Generating+Function+JB+Statistics"]
+          },
+          {
+            title: "Binomial Distribution",
+            lecture: "GS Lec 18",
+            primary: ["https://www.youtube.com/watch?v=IFhvaO_b5ds"],
+            alternate: []
+          },
+          {
+            title: "Hypergeometric Distribution",
+            lecture: "Dedicated",
+            primary: [],
+            alternate: ["https://www.youtube.com/results?search_query=Hypergeometric+Distribution+JB+Statistics"]
+          },
+          {
+            title: "Negative Binomial Distribution",
+            lecture: "Dedicated",
+            primary: [],
+            alternate: ["https://www.youtube.com/results?search_query=Negative+Binomial+Distribution+JB+Statistics"]
+          },
+          {
+            title: "Poisson Distribution",
+            lecture: "GS Lec 20",
+            primary: ["https://www.youtube.com/watch?v=zv7_EwPyzCo"],
+            alternate: []
+          }
+        ]
+      },
+      {
+        name: "Continuous Distributions",
+        emoji: "📈",
+        topics: [
+          {
+            title: "Continuous Random Variable",
+            lecture: "GS Lec 23",
+            primary: ["https://www.youtube.com/watch?v=oTaTb1EZQ8w"],
+            alternate: []
+          },
+          {
+            title: "Continuous Uniform Distribution",
+            lecture: "GS Lec 25-26",
+            primary: ["https://www.youtube.com/watch?v=gxQOaeoQ3Sk", "https://www.youtube.com/watch?v=n_1Z-HVemP0"],
+            alternate: []
+          },
+          {
+            title: "Normal Distribution",
+            lecture: "GS Lec 24",
+            primary: ["https://www.youtube.com/watch?v=4rHwrkc-w9Y"],
+            alternate: []
+          },
+          {
+            title: "Normal Approximation",
+            lecture: "GS Lec 24",
+            primary: ["https://www.youtube.com/watch?v=4rHwrkc-w9Y"],
+            alternate: []
+          },
+          {
+            title: "Exponential Distribution",
+            lecture: "GS Lec 27",
+            primary: ["https://www.youtube.com/watch?v=y7q9U35R9v8"],
+            alternate: []
+          }
+        ]
+      }
+    ]
+  },
+  dsa: {
+    title: "DSA ARCADE",
+    code: "KIIT CS2001",
+    subtitle: "Complete DSA Roadmap",
+    co: "DSA ROADMAP",
+    totalTopics: 53,
+    categories: [
+      {
+        name: "1. Introduction",
+        emoji: "🚀",
+        topics: [
+          {
+            title: "Course Introduction",
+            lecture: "00:00",
+            primary: ["https://www.youtube.com/watch?v=MdG0Vw9f1A4&t=0s"],
+            alternate: []
+          }
+        ]
+      },
+      {
+        name: "2. Fundamentals of Data Structures",
+        emoji: "⚙️",
+        topics: [
+          {
+            title: "Why Data Structures & Algorithms Matter",
+            lecture: "04:14",
+            primary: ["https://www.youtube.com/watch?v=MdG0Vw9f1A4&t=254s"],
+            alternate: []
+          },
+          {
+            title: "Primitive Data Structures",
+            lecture: "18:04",
+            primary: ["https://www.youtube.com/watch?v=MdG0Vw9f1A4&t=1084s"],
+            alternate: []
+          },
+          {
+            title: "Linear vs Non-Linear Data Structures",
+            lecture: "19:16",
+            primary: ["https://www.youtube.com/watch?v=MdG0Vw9f1A4&t=1156s"],
+            alternate: []
+          },
+          {
+            title: "Homogeneous vs Heterogeneous Structures",
+            lecture: "21:21",
+            primary: ["https://www.youtube.com/watch?v=MdG0Vw9f1A4&t=1281s"],
+            alternate: []
+          }
+        ]
+      },
+      {
+        name: "3. Arrays",
+        emoji: "📊",
+        topics: [
+          {
+            title: "Introduction to Arrays",
+            lecture: "23:09",
+            primary: ["https://www.youtube.com/watch?v=MdG0Vw9f1A4&t=1389s"],
+            alternate: []
+          },
+          {
+            title: "Array Declaration",
+            lecture: "24:57",
+            primary: ["https://www.youtube.com/watch?v=MdG0Vw9f1A4&t=1497s"],
+            alternate: []
+          },
+          {
+            title: "Array Indexing",
+            lecture: "27:30",
+            primary: ["https://www.youtube.com/watch?v=MdG0Vw9f1A4&t=1650s"],
+            alternate: []
+          },
+          {
+            title: "Address Calculation",
+            lecture: "37:14",
+            primary: ["https://www.youtube.com/watch?v=MdG0Vw9f1A4&t=2234s"],
+            alternate: []
+          },
+          {
+            title: "Multi-Dimensional Arrays",
+            lecture: "38:20",
+            primary: ["https://www.youtube.com/watch?v=MdG0Vw9f1A4&t=2300s"],
+            alternate: []
+          },
+          {
+            title: "1D vs 2D Arrays",
+            lecture: "43:40",
+            primary: ["https://www.youtube.com/watch?v=MdG0Vw9f1A4&t=2620s"],
+            alternate: []
+          },
+          {
+            title: "Advanced Array Indexing",
+            lecture: "58:31",
+            primary: ["https://www.youtube.com/watch?v=MdG0Vw9f1A4&t=3511s"],
+            alternate: []
+          },
+          {
+            title: "Sparse Matrix",
+            lecture: "01:01:31",
+            primary: ["https://www.youtube.com/watch?v=MdG0Vw9f1A4&t=3691s"],
+            alternate: []
+          }
+        ]
+      },
+      {
+        name: "4. Linked Lists",
+        emoji: "🔗",
+        topics: [
+          {
+            title: "Introduction to Linked Lists",
+            lecture: "01:08:25",
+            primary: ["https://www.youtube.com/watch?v=MdG0Vw9f1A4&t=4105s"],
+            alternate: []
+          },
+          {
+            title: "Linked List Basics",
+            lecture: "01:11:36",
+            primary: ["https://www.youtube.com/watch?v=MdG0Vw9f1A4&t=4296s"],
+            alternate: []
+          },
+          {
+            title: "Linked List Advantages & Disadvantages",
+            lecture: "01:12:57",
+            primary: ["https://www.youtube.com/watch?v=MdG0Vw9f1A4&t=4377s"],
+            alternate: []
+          },
+          {
+            title: "Creating Nodes",
+            lecture: "01:20:00",
+            primary: ["https://www.youtube.com/watch?v=MdG0Vw9f1A4&t=4800s"],
+            alternate: []
+          },
+          {
+            title: "Linked List Basic Operations",
+            lecture: "01:21:49",
+            primary: ["https://www.youtube.com/watch?v=MdG0Vw9f1A4&t=4909s"],
+            alternate: []
+          },
+          {
+            title: "Iterative vs Recursive Traversal",
+            lecture: "01:25:26",
+            primary: ["https://www.youtube.com/watch?v=MdG0Vw9f1A4&t=5126s"],
+            alternate: []
+          },
+          {
+            title: "Linked List Insertion",
+            lecture: "01:29:31",
+            primary: ["https://www.youtube.com/watch?v=MdG0Vw9f1A4&t=5371s"],
+            alternate: []
+          },
+          {
+            title: "Linked List Traversal",
+            lecture: "01:44:11",
+            primary: ["https://www.youtube.com/watch?v=MdG0Vw9f1A4&t=6251s"],
+            alternate: []
+          },
+          {
+            title: "Header Linked List",
+            lecture: "01:44:37",
+            primary: ["https://www.youtube.com/watch?v=MdG0Vw9f1A4&t=6277s"],
+            alternate: []
+          },
+          {
+            title: "Circular Linked List",
+            lecture: "01:47:05",
+            primary: ["https://www.youtube.com/watch?v=MdG0Vw9f1A4&t=6425s"],
+            alternate: []
+          },
+          {
+            title: "Doubly Circular Linked List",
+            lecture: "01:53:59",
+            primary: ["https://www.youtube.com/watch?v=MdG0Vw9f1A4&t=6839s"],
+            alternate: []
+          }
+        ]
+      },
+      {
+        name: "5. Stack",
+        emoji: "📚",
+        topics: [
+          {
+            title: "Stack Introduction",
+            lecture: "02:00:23",
+            primary: ["https://www.youtube.com/watch?v=MdG0Vw9f1A4&t=7223s"],
+            alternate: []
+          },
+          {
+            title: "Stack Concept",
+            lecture: "02:02:42",
+            primary: ["https://www.youtube.com/watch?v=MdG0Vw9f1A4&t=7362s"],
+            alternate: []
+          },
+          {
+            title: "Push & Pop Operations",
+            lecture: "02:03:35",
+            primary: ["https://www.youtube.com/watch?v=MdG0Vw9f1A4&t=7415s"],
+            alternate: []
+          },
+          {
+            title: "Stack Implementation",
+            lecture: "02:08:11",
+            primary: ["https://www.youtube.com/watch?v=MdG0Vw9f1A4&t=7691s"],
+            alternate: []
+          },
+          {
+            title: "Complete Stack Implementation",
+            lecture: "02:17:34",
+            primary: ["https://www.youtube.com/watch?v=MdG0Vw9f1A4&t=8254s"],
+            alternate: []
+          },
+          {
+            title: "Stack Applications",
+            lecture: "02:22:24",
+            primary: ["https://www.youtube.com/watch?v=MdG0Vw9f1A4&t=8544s"],
+            alternate: []
+          },
+          {
+            title: "Infix, Prefix & Postfix Notations",
+            lecture: "02:24:06",
+            primary: ["https://www.youtube.com/watch?v=MdG0Vw9f1A4&t=8646s"],
+            alternate: []
+          },
+          {
+            title: "Expression Evaluation",
+            lecture: "02:47:23",
+            primary: ["https://www.youtube.com/watch?v=MdG0Vw9f1A4&t=10043s"],
+            alternate: []
+          }
+        ]
+      },
+      {
+        name: "6. Recursion",
+        emoji: "🔄",
+        topics: [
+          {
+            title: "Recursion Introduction",
+            lecture: "02:53:22",
+            primary: ["https://www.youtube.com/watch?v=MdG0Vw9f1A4&t=10402s"],
+            alternate: []
+          },
+          {
+            title: "Factorial via Recursion",
+            lecture: "02:56:01",
+            primary: ["https://www.youtube.com/watch?v=MdG0Vw9f1A4&t=10561s"],
+            alternate: []
+          },
+          {
+            title: "Understanding Recursive Calls",
+            lecture: "03:07:29",
+            primary: ["https://www.youtube.com/watch?v=MdG0Vw9f1A4&t=11249s"],
+            alternate: []
+          },
+          {
+            title: "Recursion Examples",
+            lecture: "03:22:24",
+            primary: ["https://www.youtube.com/watch?v=MdG0Vw9f1A4&t=12144s"],
+            alternate: []
+          },
+          {
+            title: "Tower of Hanoi",
+            lecture: "03:30:43",
+            primary: ["https://www.youtube.com/watch?v=MdG0Vw9f1A4&t=12643s"],
+            alternate: []
+          },
+          {
+            title: "Tail Recursion",
+            lecture: "03:40:29",
+            primary: ["https://www.youtube.com/watch?v=MdG0Vw9f1A4&t=13229s"],
+            alternate: []
+          }
+        ]
+      },
+      {
+        name: "7. Queue",
+        emoji: "🚶‍♂️🚶‍♀️",
+        topics: [
+          {
+            title: "Queue Introduction",
+            lecture: "04:01:08",
+            primary: ["https://www.youtube.com/watch?v=MdG0Vw9f1A4&t=14468s"],
+            alternate: []
+          },
+          {
+            title: "Queue Operations",
+            lecture: "04:09:39",
+            primary: ["https://www.youtube.com/watch?v=MdG0Vw9f1A4&t=14979s"],
+            alternate: []
+          },
+          {
+            title: "Queue Implementation",
+            lecture: "04:20:07",
+            primary: ["https://www.youtube.com/watch?v=MdG0Vw9f1A4&t=15607s"],
+            alternate: []
+          },
+          {
+            title: "Circular Queue",
+            lecture: "04:20:21",
+            primary: ["https://www.youtube.com/watch?v=MdG0Vw9f1A4&t=15621s"],
+            alternate: []
+          },
+          {
+            title: "Queue Applications",
+            lecture: "04:40:58",
+            primary: ["https://www.youtube.com/watch?v=MdG0Vw9f1A4&t=16858s"],
+            alternate: []
+          }
+        ]
+      },
+      {
+        name: "8. Trees",
+        emoji: "🌳",
+        topics: [
+          {
+            title: "Tree Terminology",
+            lecture: "04:47:02",
+            primary: ["https://www.youtube.com/watch?v=MdG0Vw9f1A4&t=17222s"],
+            alternate: []
+          },
+          {
+            title: "Binary Trees",
+            lecture: "04:50:16",
+            primary: ["https://www.youtube.com/watch?v=MdG0Vw9f1A4&t=17416s"],
+            alternate: []
+          },
+          {
+            title: "Tree Traversals",
+            lecture: "05:05:45",
+            primary: ["https://www.youtube.com/watch?v=MdG0Vw9f1A4&t=18345s"],
+            alternate: []
+          },
+          {
+            title: "Binary Search Tree (BST)",
+            lecture: "05:15:29",
+            primary: ["https://www.youtube.com/watch?v=MdG0Vw9f1A4&t=18929s"],
+            alternate: []
+          },
+          {
+            title: "BST Deletion",
+            lecture: "05:18:47",
+            primary: ["https://www.youtube.com/watch?v=MdG0Vw9f1A4&t=19127s"],
+            alternate: []
+          },
+          {
+            title: "AVL Trees",
+            lecture: "05:30:43",
+            primary: ["https://www.youtube.com/watch?v=MdG0Vw9f1A4&t=19843s"],
+            alternate: []
+          },
+          {
+            title: "Complete Binary Tree",
+            lecture: "05:53:42",
+            primary: ["https://www.youtube.com/watch?v=MdG0Vw9f1A4&t=21222s"],
+            alternate: []
+          },
+          {
+            title: "Heap Data Structure",
+            lecture: "05:56:13",
+            primary: ["https://www.youtube.com/watch?v=MdG0Vw9f1A4&t=21373s"],
+            alternate: []
+          },
+          {
+            title: "Heap Operations",
+            lecture: "06:03:42",
+            primary: ["https://www.youtube.com/watch?v=MdG0Vw9f1A4&t=21822s"],
+            alternate: []
+          },
+          {
+            title: "Binary Tree Labeling",
+            lecture: "06:09:57",
+            primary: ["https://www.youtube.com/watch?v=MdG0Vw9f1A4&t=22197s"],
+            alternate: []
+          }
+        ]
+      }
+    ]
+  }
 };
+
+// Achievements Definitions
+const achievementsList = [
+  { id: 'first_topic', name: 'First Blood 🥉', desc: 'Clear your first topic across any course', check: (c, pr) => c >= 1 },
+  { id: 'prob_cat_1', name: 'Foundations Master 🎲', desc: 'Clear all Foundations of Probability topics', check: (c, pr) => {
+    return coursesData.probability.categories[0].topics.every(t => pr[t.title]);
+  }},
+  { id: 'prob_cat_2', name: 'Discrete Master 🎯', desc: 'Clear all Discrete Distributions topics', check: (c, pr) => {
+    return coursesData.probability.categories[1].topics.every(t => pr[t.title]);
+  }},
+  { id: 'prob_cat_3', name: 'Continuous Master 📈', desc: 'Clear all Continuous Distributions topics', check: (c, pr) => {
+    return coursesData.probability.categories[2].topics.every(t => pr[t.title]);
+  }},
+  { id: 'dsa_arrays', name: 'Array Virtuoso 📊', desc: 'Clear all Array topics in DSA', check: (c, pr) => {
+    return coursesData.dsa.categories[2].topics.every(t => pr[t.title]);
+  }},
+  { id: 'dsa_lists', name: 'Pointer Wizard 🔗', desc: 'Clear all Linked List topics in DSA', check: (c, pr) => {
+    return coursesData.dsa.categories[3].topics.every(t => pr[t.title]);
+  }},
+  { id: 'dsa_stacks', name: 'Stack Architect 📚', desc: 'Clear all Stack topics in DSA', check: (c, pr) => {
+    return coursesData.dsa.categories[4].topics.every(t => pr[t.title]);
+  }},
+  { id: 'dsa_trees', name: 'Tree Guru 🌳', desc: 'Clear all Tree topics in DSA', check: (c, pr) => {
+    return coursesData.dsa.categories[7].topics.every(t => pr[t.title]);
+  }},
+  { id: 'all_clear', name: 'Ultimate Conqueror 🏆', desc: 'Complete 100% of all available courses!', check: (c, pr) => {
+    const totalProb = coursesData.probability.categories.flatMap(c => c.topics).every(t => pr[t.title]);
+    const totalDsa = coursesData.dsa.categories.flatMap(c => c.topics).every(t => pr[t.title]);
+    return totalProb && totalDsa;
+  }}
+];
 
 // Storage Keys
 const PROFILES_KEY = 'ma21001_arcade_profiles';
@@ -162,21 +577,6 @@ let dbClient = null;
 if (window.supabase) {
   dbClient = window.supabase.createClient(supabaseUrl, supabaseKey);
 }
-
-// Achievements Definitions
-const achievementsList = [
-  { id: 'first_topic', name: 'First Blood 🥉', desc: 'Clear your first syllabus topic', check: (c, pr) => c >= 1 },
-  { id: 'cat_1_clear', name: 'Foundations Master 🎲', desc: 'Clear all Foundations of Probability topics', check: (c, pr) => {
-    return syllabusData.categories[0].topics.every(t => pr[t.title]);
-  }},
-  { id: 'cat_2_clear', name: 'Discrete Master 🎯', desc: 'Clear all Discrete Distributions topics', check: (c, pr) => {
-    return syllabusData.categories[1].topics.every(t => pr[t.title]);
-  }},
-  { id: 'cat_3_clear', name: 'Continuous Master 📈', desc: 'Clear all Continuous Distributions topics', check: (c, pr) => {
-    return syllabusData.categories[2].topics.every(t => pr[t.title]);
-  }},
-  { id: 'all_clear', name: 'Syllabus Conqueror 🏆', desc: 'Complete 100% of your mid-sem quest', check: (c, pr) => c === 21 }
-];
 
 // Synth Arcade Sound FX Synthesizer
 class SoundFX {
@@ -508,7 +908,9 @@ function renderSyllabus() {
   const container = document.getElementById('syllabus-container');
   container.innerHTML = '';
   
-  syllabusData.categories.forEach((category, catIdx) => {
+  const course = coursesData[currentCourse] || coursesData.probability;
+
+  course.categories.forEach((category, catIdx) => {
     const catId = catIdx + 1;
     
     const card = document.createElement('section');
@@ -613,6 +1015,38 @@ function renderSyllabus() {
   });
 }
 
+// Switch Course UI Helper
+function switchCourseUI() {
+  soundFX.init();
+  soundFX.playCheck();
+  
+  const course = coursesData[currentCourse];
+  const codeEl = document.getElementById('hero-course-code');
+  const coEl = document.getElementById('hero-course-co');
+  const titleEl = document.getElementById('hero-course-title');
+  const subtitleEl = document.getElementById('hero-course-subtitle');
+
+  if (codeEl) codeEl.textContent = course.code;
+  if (coEl) coEl.textContent = course.co;
+  if (titleEl) titleEl.textContent = course.title;
+  if (subtitleEl) subtitleEl.textContent = course.subtitle;
+  
+  renderSyllabus();
+  updateProgress();
+  
+  // Expand first card of switched course
+  const firstCard = document.getElementById('category-card-1');
+  if (firstCard) {
+    firstCard.classList.add('active');
+    const panel = firstCard.querySelector('.category-content-panel');
+    if (panel) {
+      setTimeout(() => {
+        panel.style.maxHeight = panel.scrollHeight + 'px';
+      }, 50);
+    }
+  }
+}
+
 // Daily study streak operations
 function triggerStreakProgress() {
   const today = new Date().toISOString().split('T')[0];
@@ -647,32 +1081,32 @@ function verifyAndCleanStreak() {
   document.getElementById('streak-count').textContent = userStreak.toString();
 }
 
-// Rank & XP Leveling
-function updateRankAndXP(completedCount) {
-  const currentXP = completedCount * 100;
-  const maxXP = 2100;
+// Rank & XP Leveling (Calculates XP across ALL completed topics in both courses)
+function updateRankAndXP(overallCompletedCount) {
+  const currentXP = overallCompletedCount * 100;
+  const maxXP = (coursesData.probability.totalTopics + coursesData.dsa.totalTopics) * 100; // 7400 XP
   
-  const xpPct = (currentXP / maxXP) * 100;
+  const xpPct = Math.min(100, (currentXP / maxXP) * 100);
   document.getElementById('xp-fill').style.width = `${xpPct}%`;
   document.getElementById('xp-display').textContent = `${currentXP} / ${maxXP} XP`;
   
-  let rank = "Formula Freshman 🥚";
+  let rank = "Novice Gamer 🥚";
   let currentLevel = 1;
   
-  if (currentXP >= 100 && currentXP <= 500) {
-    rank = "Formula Novice 🧪";
+  if (currentXP >= 100 && currentXP <= 900) {
+    rank = "Novice Coder 🧪";
     currentLevel = 2;
-  } else if (currentXP >= 600 && currentXP <= 1100) {
-    rank = "Axiom Apprentice 🛡️";
+  } else if (currentXP >= 1000 && currentXP <= 2400) {
+    rank = "Algorithm Apprentice 🛡️";
     currentLevel = 3;
-  } else if (currentXP >= 1200 && currentXP <= 1600) {
-    rank = "Distribution Duelist ⚔️";
+  } else if (currentXP >= 2500 && currentXP <= 4400) {
+    rank = "Code Ninja ⚔️";
     currentLevel = 4;
-  } else if (currentXP >= 1700 && currentXP <= 2000) {
-    rank = "Stats Sorcerer 🔮";
+  } else if (currentXP >= 4500 && currentXP <= 6400) {
+    rank = "Data Wizard 🔮";
     currentLevel = 5;
-  } else if (currentXP === 2100) {
-    rank = "Probability Demi-God 🏆";
+  } else if (currentXP >= 6500) {
+    rank = "Arcade Demi-God 🏆";
     currentLevel = 5;
   }
   
@@ -686,14 +1120,14 @@ function updateRankAndXP(completedCount) {
 }
 
 // Achievements Render
-function updateAchievements(completedCount) {
+function updateAchievements(overallCompletedCount) {
   const container = document.getElementById('achievements-container');
   container.innerHTML = '';
   
   let freshlyUnlocked = false;
 
   achievementsList.forEach((badge) => {
-    const isEligible = badge.check(completedCount, userProgress);
+    const isEligible = badge.check(overallCompletedCount, userProgress);
     const alreadyUnlocked = userUnlockedAchievements.includes(badge.id);
     
     const badgeEl = document.createElement('div');
@@ -710,9 +1144,8 @@ function updateAchievements(completedCount) {
     
     let emoji = '🏅';
     if (badge.id === 'first_topic') emoji = '🥉';
-    if (badge.id === 'cat_1_clear') emoji = '🎲';
-    if (badge.id === 'cat_2_clear') emoji = '🎯';
-    if (badge.id === 'cat_3_clear') emoji = '📈';
+    if (badge.id.startsWith('prob_')) emoji = '🎲';
+    if (badge.id.startsWith('dsa_')) emoji = '💻';
     if (badge.id === 'all_clear') emoji = '🏆';
 
     badgeEl.innerHTML = `
@@ -732,12 +1165,13 @@ function updateAchievements(completedCount) {
   }
 }
 
-// Update all progress levels (categories + overall)
+// Update all progress levels (active course categories + overall stats)
 function updateProgress() {
-  let totalTopics = 0;
-  let completedTopics = 0;
+  const activeCourseData = coursesData[currentCourse] || coursesData.probability;
+  let activeCourseTotal = 0;
+  let activeCourseCompleted = 0;
   
-  syllabusData.categories.forEach((category, catIdx) => {
+  activeCourseData.categories.forEach((category, catIdx) => {
     const catId = catIdx + 1;
     const catTopics = category.topics;
     const catTotal = catTopics.length;
@@ -749,8 +1183,8 @@ function updateProgress() {
       }
     });
     
-    totalTopics += catTotal;
-    completedTopics += catCompleted;
+    activeCourseTotal += catTotal;
+    activeCourseCompleted += catCompleted;
     
     const fractionEl = document.getElementById(`cat-fraction-${catId}`);
     const fillEl = document.getElementById(`cat-fill-${catId}`);
@@ -762,52 +1196,62 @@ function updateProgress() {
     }
   });
   
-  const overallPercentage = totalTopics > 0 ? Math.round((completedTopics / totalTopics) * 100) : 0;
+  // Compute overall counts across both courses for tab badges & global XP
+  const probCompleted = coursesData.probability.categories.flatMap(c => c.topics).filter(t => userProgress[t.title]).length;
+  const dsaCompleted = coursesData.dsa.categories.flatMap(c => c.topics).filter(t => userProgress[t.title]).length;
+  const overallTotalCompleted = probCompleted + dsaCompleted;
+  
+  const probBadge = document.getElementById('prob-tab-badge');
+  const dsaBadge = document.getElementById('dsa-tab-badge');
+  if (probBadge) probBadge.textContent = `${probCompleted}/21`;
+  if (dsaBadge) dsaBadge.textContent = `${dsaCompleted}/53`;
+
+  const coursePercentage = activeCourseTotal > 0 ? Math.round((activeCourseCompleted / activeCourseTotal) * 100) : 0;
   
   const circle = document.querySelector('.progress-ring__circle');
   if (circle) {
     const radius = circle.r.baseVal.value;
     const circumference = radius * 2 * Math.PI;
-    const offset = circumference - (overallPercentage / 100) * circumference;
+    const offset = circumference - (coursePercentage / 100) * circumference;
     circle.style.strokeDashoffset = offset;
   }
   
   const percentEl = document.getElementById('overall-percentage');
   const fractionEl = document.getElementById('overall-fraction');
-  if (percentEl) percentEl.textContent = `${overallPercentage}%`;
-  if (fractionEl) fractionEl.textContent = `${completedTopics}/${totalTopics}`;
+  if (percentEl) percentEl.textContent = `${coursePercentage}%`;
+  if (fractionEl) fractionEl.textContent = `${activeCourseCompleted}/${activeCourseTotal}`;
   
-  updateRankAndXP(completedTopics);
-  updateAchievements(completedTopics);
+  updateRankAndXP(overallTotalCompleted);
+  updateAchievements(overallTotalCompleted);
   
   // Tagline message logic
   const motivationalEl = document.getElementById('motivational-msg');
   if (motivationalEl) {
     let msg = "Let's get started 🚀";
-    if (overallPercentage > 0 && overallPercentage < 30) {
+    if (coursePercentage > 0 && coursePercentage < 30) {
       msg = "First steps taken! Keep pushing 🏔️";
-    } else if (overallPercentage >= 30 && overallPercentage < 50) {
+    } else if (coursePercentage >= 30 && coursePercentage < 50) {
       msg = "Building momentum! You've got this ⚡";
-    } else if (overallPercentage >= 50 && overallPercentage < 75) {
+    } else if (coursePercentage >= 50 && coursePercentage < 75) {
       msg = "Halfway there! Keep burning 🔥";
-    } else if (overallPercentage >= 75 && overallPercentage < 100) {
+    } else if (coursePercentage >= 75 && coursePercentage < 100) {
       msg = "In the home stretch! Almost ready 🎯";
-    } else if (overallPercentage === 100) {
-      msg = "Syllabus crushed! You're ready 🏆";
+    } else if (coursePercentage === 100) {
+      msg = "Course crushed! You're ready 🏆";
       
       // Trigger full celebration
-      if (!sessionStorage.getItem('full_confetti_triggered')) {
+      if (!sessionStorage.getItem(`full_confetti_${currentCourse}`)) {
         soundFX.playVictory();
         confetti.fullscreenCelebration();
         setTimeout(() => {
           showCelebrationModal();
         }, 850);
-        sessionStorage.setItem('full_confetti_triggered', 'true');
+        sessionStorage.setItem(`full_confetti_${currentCourse}`, 'true');
       }
     }
     
-    if (overallPercentage < 100) {
-      sessionStorage.removeItem('full_confetti_triggered');
+    if (coursePercentage < 100) {
+      sessionStorage.removeItem(`full_confetti_${currentCourse}`);
     }
     
     motivationalEl.innerHTML = msg;
@@ -1092,7 +1536,7 @@ function renderSaveSlots() {
     });
     
     const xp = completed * 100;
-    const percent = Math.round((completed / 21) * 100);
+    const percent = Math.round((completed / 74) * 100);
     
     const slotEl = document.createElement('div');
     slotEl.className = 'save-slot';
@@ -1152,15 +1596,15 @@ function renderLeaderboard() {
     });
     
     const xp = completed * 100;
-    const percent = Math.round((completed / 21) * 100);
+    const percent = Math.round((completed / 74) * 100);
     
     // Get rank level name
-    let rankName = "Freshman 🥚";
-    if (xp >= 100 && xp <= 500) rankName = "Novice 🧪";
-    else if (xp >= 600 && xp <= 1100) rankName = "Apprentice 🛡️";
-    else if (xp >= 1200 && xp <= 1600) rankName = "Duelist ⚔️";
-    else if (xp >= 1700 && xp <= 2000) rankName = "Sorcerer 🔮";
-    else if (xp === 2100) rankName = "Demi-God 🏆";
+    let rankName = "Gamer 🥚";
+    if (xp >= 100 && xp <= 900) rankName = "Coder 🧪";
+    else if (xp >= 1000 && xp <= 2400) rankName = "Apprentice 🛡️";
+    else if (xp >= 2500 && xp <= 4400) rankName = "Ninja ⚔️";
+    else if (xp >= 4500 && xp <= 6400) rankName = "Wizard 🔮";
+    else if (xp >= 6500) rankName = "Demi-God 🏆";
     
     players.push({
       name: name,
@@ -1286,6 +1730,28 @@ document.addEventListener('DOMContentLoaded', () => {
       renderSaveSlots();
     }
   });
+
+  // Course Switcher Tab Listeners (Probability vs DSA)
+  const probTab = document.getElementById('course-tab-probability');
+  const dsaTab = document.getElementById('course-tab-dsa');
+
+  if (probTab && dsaTab) {
+    probTab.addEventListener('click', () => {
+      if (currentCourse === 'probability') return;
+      currentCourse = 'probability';
+      probTab.classList.add('active');
+      dsaTab.classList.remove('active');
+      switchCourseUI();
+    });
+
+    dsaTab.addEventListener('click', () => {
+      if (currentCourse === 'dsa') return;
+      currentCourse = 'dsa';
+      dsaTab.classList.add('active');
+      probTab.classList.remove('active');
+      switchCourseUI();
+    });
+  }
 
   // Toggle tab buttons (Sign In vs Sign Up)
   const tabSignin = document.getElementById('tab-signin');
